@@ -22,9 +22,39 @@ const sounds = {
   ],
   resultat_fanfare: require('../assets/sounds/resultats/tantantannnnnn.mp3'),
   resultat_validation: require('../assets/sounds/resultats/validation.mp3'),
+  mainTheme: require('../assets/sounds/mainthemesong/Naruto Shippuden - Girei ( Pains Theme Song).mp3'),
 };
 
 let soundObject = null;
+let themeSoundObject = null;
+
+export const playTheme = async () => {
+  try {
+    if (themeSoundObject) {
+      await themeSoundObject.unloadAsync();
+    }
+    const { sound } = await Audio.Sound.createAsync(
+      sounds.mainTheme,
+      { isLooping: true, volume: 0.5 }
+    );
+    themeSoundObject = sound;
+    await themeSoundObject.playAsync();
+  } catch (error) {
+    console.log("[SoundService] Error playing theme:", error);
+  }
+};
+
+export const stopTheme = async () => {
+  if (themeSoundObject) {
+    try {
+      await themeSoundObject.stopAsync();
+      await themeSoundObject.unloadAsync();
+      themeSoundObject = null;
+    } catch (error) {
+      console.log("[SoundService] Error stopping theme:", error);
+    }
+  }
+};
 
 export const playSound = async (type) => {
   try {

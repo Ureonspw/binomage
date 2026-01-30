@@ -7,7 +7,7 @@ import LesBinomesSontTitle from '../images/lesbinomesont_icon.svg';
 import LoopCircleIcon from '../images/boucle_cercle_icon.svg';
 import { getParticipants } from '../../services/database';
 import { generatePairings } from '../../utils/pairing';
-import { playSuspenseSound, stopSound } from '../../services/soundService';
+import { playSuspenseSound, stopSound, stopTheme } from '../../services/soundService';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,6 +30,7 @@ export default function RandomBinomage({ route, navigation }) {
 
   // Initial fetch
   useEffect(() => {
+    stopTheme();
     if (!params.existingPairings) {
       const init = async () => {
         console.log(`[RandomBinomage] Initializing for ${speciality}`);

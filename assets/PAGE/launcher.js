@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import TitreSplashScreen from '../images/titresplashscreen.png';
 import Year2026 from '../images/2026.svg';
 import StartButton from '../images/Boutton_Commencer.svg';
 import DotsPattern from '../images/dots_pattern.png';
-import { playSound } from '../../services/soundService';
+import { playSound, playTheme } from '../../services/soundService';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Launcher({ navigation }) {
+  useFocusEffect(
+    useCallback(() => {
+      playTheme();
+    }, [])
+  );
+
   const handlePress = async () => {
     await playSound('splash');
     navigation.navigate('SelectionBinomage');

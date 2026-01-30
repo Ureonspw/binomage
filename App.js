@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { enableScreens } from 'react-native-screens';
 import { initDatabase } from './services/database';
+import { playTheme } from './services/soundService';
 
 enableScreens();
 
@@ -25,6 +26,7 @@ export default function App() {
 
   useEffect(() => {
     initDatabase();
+    playTheme();
   }, []);
 
   if (!fontsLoaded) {
