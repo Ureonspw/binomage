@@ -18,6 +18,8 @@ const sounds = {
     require('../assets/sounds/suspence/drum-roll-for-victory-366448.mp3'),
     require('../assets/sounds/suspence/drum-roll-sound-effect-278576.mp3'),
     require('../assets/sounds/suspence/timpani-roll-kevinsticks-6453.mp3'),
+    require('../assets/sounds/suspence/nouveau1.mp3'),
+    require('../assets/sounds/suspence/nouveau2.mp3'),
   ]
 };
 
