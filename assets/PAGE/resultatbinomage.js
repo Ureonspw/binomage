@@ -11,6 +11,13 @@ const { width, height } = Dimensions.get('window');
 export default function ResultatBinomage({ route, navigation }) {
   const { pairing, pairings, currentIndex, speciality } = route.params; 
 
+  React.useEffect(() => {
+    // Play a random result sound
+    const resultSounds = ['resultat_fanfare', 'resultat_validation'];
+    const randomSound = resultSounds[Math.floor(Math.random() * resultSounds.length)];
+    playSound(randomSound);
+  }, []);
+
   const handleContinue = () => {
     playSound('button');
     if (currentIndex + 1 < pairings.length) {

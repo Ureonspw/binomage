@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Text, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Text, TextInput, Alert, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import DotsPattern from '../images/dots_pattern.png';
 import BackButton from '../images/button_retour.svg';
 import ContainerFrame from '../images/CONTAINERIMAGEBINOMAGEICON.svg';
 import EnregistrerButton from '../images/ENREGISTRER_BOUTTON.svg'; 
-import { addParticipant } from '../../services/database';
+// Wait, I don't have SupprimerButton svg. I'll make a specialized button or just use text "SUPPRIMER"
+import { addParticipant, updateParticipant, deleteParticipant } from '../../services/database';
 import { playSound } from '../../services/soundService';
 
 const { width, height } = Dimensions.get('window');
 
 export default function AjoutPersonneBinomage({ route, navigation }) {
-  const { speciality } = route.params || { speciality: 'INFO' };
+  const { speciality, participant } = route.params || { speciality: 'INFO' };
   const [role, setRole] = useState('PARRAIN');
   const [name, setName] = useState('');
   const [imageUri, setImageUri] = useState(null);
+
+  useEffect(() => {
+    if (participant) {
+      setName(participant.name);
+      setRole(participant.role);
+      setImageUri(participant.imageUri);
+    }
+  }, [participant]);
 
   const pickImage = async () => {
     playSound('button');
@@ -38,12 +47,42 @@ export default function AjoutPersonneBinomage({ route, navigation }) {
     }
 
     try {
-      await addParticipant(name.trim(), role, speciality, imageUri);
-      Alert.alert("Succès", `${name} a été ajouté en tant que ${role} (${speciality})`);
+      if (participant) {
+        await updateParticipant(participant.id, name.trim(), role, speciality, imageUri);
+        Alert.alert("Succès", "Modifications enregistrées.");
+      } else {
+        await addParticipant(name.trim(), role, speciality, imageUri);
+        Alert.alert("Succès", `${name} a été ajouté en tant que ${role} (${speciality})`);
+      }
       navigation.goBack();
     } catch (error) {
       Alert.alert("Erreur", "Impossible d'enregistrer le participant.");
     }
+  };
+
+  const handleDelete = async () => {
+    playSound('button');
+    Alert.alert(
+      "Confirmation",
+      "Voulez-vous vraiment supprimer ce participant ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        { 
+          text: "Supprimer", 
+          style: "destructive", 
+          onPress: async () => {
+            try {
+              if (participant) {
+                await deleteParticipant(participant.id);
+                navigation.goBack();
+              }
+            } catch (error) {
+               Alert.alert("Erreur", "Impossible de supprimer.");
+            }
+          }
+        }
+      ]
+    );
   };
 
   const handleBack = () => {
@@ -77,6 +116,8 @@ export default function AjoutPersonneBinomage({ route, navigation }) {
       >
         <BackButton width={40} height={40} />
       </TouchableOpacity>
+
+      <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 100 }} style={{ width: '100%' }}>
 
       {/* Role Selection */}
       <View style={styles.section}>
@@ -129,15 +170,26 @@ export default function AjoutPersonneBinomage({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Save Button */}
-      <View style={styles.bottomContainer}>
+      {/* Buttons */}
+      <View style={styles.buttonsContainer}>
           <TouchableOpacity 
             style={styles.buttonWrapper}
             onPress={handleSave}
           >
             <EnregistrerButton width={width * 0.7} height={70} preserveAspectRatio="xMidYMid meet" />
           </TouchableOpacity>
+          
+          {participant && (
+            <TouchableOpacity 
+                style={[styles.buttonWrapper, { marginTop: 10 }]}
+                onPress={handleDelete}
+            >
+                <Text style={styles.deleteText}>SUPPRIMER</Text>
+            </TouchableOpacity>
+          )}
       </View>
+
+      </ScrollView>
     </View>
   );
 }
@@ -262,12 +314,20 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  bottomContainer: {
+  buttonsContainer: {
     flex: 1,
     width: '100%',
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 40,
+  },
+  deleteText: {
+    fontFamily: 'Jersey25',
+    fontSize: 24,
+    color: '#B22222',
+    textAlign: 'center',
+    marginTop: 10,
+    textDecorationLine: 'underline',
   },
   buttonWrapper: {
     width: width,

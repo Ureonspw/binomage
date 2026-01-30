@@ -15,12 +15,13 @@ const sounds = {
   splash: require('../assets/sounds/splashscreenbutton.mp3'),
   button: require('../assets/sounds/allbuttonsound.mp3'),
   suspense: [
-    require('../assets/sounds/suspence/drum-roll-for-victory-366448.mp3'),
-    require('../assets/sounds/suspence/drum-roll-sound-effect-278576.mp3'),
-    require('../assets/sounds/suspence/timpani-roll-kevinsticks-6453.mp3'),
+    require('../assets/sounds/suspence/AKATSUKI.mp3'),
+    require('../assets/sounds/suspence/mercon.mp3'),
     require('../assets/sounds/suspence/nouveau1.mp3'),
     require('../assets/sounds/suspence/nouveau2.mp3'),
-  ]
+  ],
+  resultat_fanfare: require('../assets/sounds/resultats/tantantannnnnn.mp3'),
+  resultat_validation: require('../assets/sounds/resultats/validation.mp3'),
 };
 
 let soundObject = null;

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Image, Text, FlatList } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import DotsPattern from '../images/dots_pattern.png';
 import WolfIcon from '../images/loup_garou.png';
@@ -48,6 +48,12 @@ export default function ReglageAjoutBinomage({ navigation }) {
     playSound('button');
     navigation.navigate('AjoutPersonneBinomage', { speciality });
   };
+
+  const renderItem = useCallback(({ item }) => (
+    <TouchableOpacity onPress={() => { playSound('button'); navigation.navigate('AjoutPersonneBinomage', { speciality, participant: item }); }}>
+      <Text style={styles.participantName}>{item.name}</Text>
+    </TouchableOpacity>
+  ), [speciality, navigation]);
 
   return (
     <View style={styles.container}>
@@ -110,21 +116,33 @@ export default function ReglageAjoutBinomage({ navigation }) {
       <View style={styles.labelsSection}>
           <View style={styles.halfWidth}>
               <Text style={styles.infoTitle}>PARRAIN :</Text>
-              <ScrollView style={styles.namesList}>
-                {parrains.map((p) => (
-                  <Text key={p.id} style={styles.participantName}>{p.name}</Text>
-                ))}
-                {parrains.length === 0 && <Text style={styles.emptyText}>Aucun</Text>}
-              </ScrollView>
+              <View style={styles.namesList}>
+                  <FlatList
+                    data={parrains}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderItem}
+                    ListEmptyComponent={<Text style={styles.emptyText}>Aucun</Text>}
+                    initialNumToRender={15}
+                    maxToRenderPerBatch={10}
+                    windowSize={5}
+                    showsVerticalScrollIndicator={false}
+                  />
+              </View>
           </View>
           <View style={styles.halfWidth}>
               <Text style={styles.infoTitle}>FILLEUL :</Text>
-              <ScrollView style={styles.namesList}>
-                {filleuls.map((f) => (
-                  <Text key={f.id} style={styles.participantName}>{f.name}</Text>
-                ))}
-                {filleuls.length === 0 && <Text style={styles.emptyText}>Aucun</Text>}
-              </ScrollView>
+               <View style={styles.namesList}>
+                  <FlatList
+                    data={filleuls}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderItem}
+                    ListEmptyComponent={<Text style={styles.emptyText}>Aucun</Text>}
+                    initialNumToRender={15}
+                    maxToRenderPerBatch={10}
+                    windowSize={5}
+                    showsVerticalScrollIndicator={false}
+                  />
+              </View>
           </View>
       </View>
 
